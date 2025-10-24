@@ -4,9 +4,10 @@ import '../datasources/user_local_datasource.dart';
 import '../datasources/user_remote_datasource.dart';
 
 abstract class UserRepository {
-  Future<List<UserModel>> getPersistedUsers();
-  Future<UserModel> fetchAndSaveNewUser();
-  Future<void> deleteUser(UserModel user);
+  Future<List<UserModel>> getPersistedUsers(bool isTemp);
+  Future<UserModel> fetchAndSaveNewUser(bool isTemp);
+  Future<void> saveUser(UserModel user, bool isTemp);
+  Future<void> deleteUser(UserModel user, bool isTemp);
 }
 
 class UserRepositoryImpl implements UserRepository {
@@ -19,12 +20,12 @@ class UserRepositoryImpl implements UserRepository {
   });
 
   @override
-  Future<List<UserModel>> getPersistedUsers() async {
-    return await localDataSource.getUsers();
+  Future<List<UserModel>> getPersistedUsers(bool isTemp) async {
+    return await localDataSource.getUsers(isTemp);
   }
 
   @override
-  Future<UserModel> fetchAndSaveNewUser() async {
+  Future<UserModel> fetchAndSaveNewUser(bool isTemp) async {
     try {
       final userListFromApi = await remoteDataSource.getUser();
       if (userListFromApi.isEmpty) {
@@ -32,7 +33,7 @@ class UserRepositoryImpl implements UserRepository {
       }
       final newUser = userListFromApi.first;
 
-      await localDataSource.saveUser(newUser);
+      await localDataSource.saveUser(newUser, isTemp);
 
       return newUser;
     } catch (e) {
@@ -42,7 +43,12 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<void> deleteUser(UserModel user) async {
-    await localDataSource.deleteUser(user);
+  Future<void> saveUser(UserModel user, bool isTemp) async {
+    await localDataSource.saveUser(user, isTemp);
+  }
+
+  @override
+  Future<void> deleteUser(UserModel user, bool isTemp) async {
+    await localDataSource.deleteUser(user, isTemp);
   }
 }

@@ -79,7 +79,10 @@ class UserView extends StatelessWidget {
                                   MaterialPageRoute(
                                     builder: (_) => BlocProvider.value(
                                       value: context.read<PersistenceCubit>(),
-                                      child: UserDetailPage(user: user),
+                                      child: UserDetailPage(
+                                        user: user,
+                                        isTemp: false,
+                                      ),
                                     ),
                                   ),
                                 );

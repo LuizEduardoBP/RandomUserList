@@ -32,7 +32,7 @@ class UserCubit extends Cubit<UserState> {
   Future<void> loadInitialUsers() async {
     try {
       emit(UserLoading());
-      final users = await _userRepository.getPersistedUsers();
+      final users = await _userRepository.getPersistedUsers(true);
       emit(UserSuccess(users));
 
       if (!_ticker.isTicking) {
@@ -46,7 +46,7 @@ class UserCubit extends Cubit<UserState> {
   Future<void> loadPersistedUsers() async {
     try {
       emit(UserLoading());
-      final users = await _userRepository.getPersistedUsers();
+      final users = await _userRepository.getPersistedUsers(true);
       emit(UserSuccess(users));
     } catch (e) {
       emit(UserError('Falha ao carregar usuários salvos: $e'));
@@ -63,9 +63,9 @@ class UserCubit extends Cubit<UserState> {
         emit(UserLoading());
       }
 
-      await _userRepository.fetchAndSaveNewUser();
+      await _userRepository.fetchAndSaveNewUser(true);
 
-      final updatedUsers = await _userRepository.getPersistedUsers();
+      final updatedUsers = await _userRepository.getPersistedUsers(true);
 
       emit(UserSuccess(updatedUsers));
     } catch (e) {
@@ -77,9 +77,20 @@ class UserCubit extends Cubit<UserState> {
 
   Future<void> deleteUser(UserModel user) async {
     try {
-      await _userRepository.deleteUser(user);
+      await _userRepository.deleteUser(user, true);
 
-      final updatedUsers = await _userRepository.getPersistedUsers();
+      final updatedUsers = await _userRepository.getPersistedUsers(true);
+
+      emit(UserSuccess(updatedUsers));
+    } catch (e) {
+      emit(UserError('Falha ao remover usuário: $e'));
+    }
+  }
+
+  Future<void> saveUser(UserModel user) async {
+    try {
+      await _userRepository.saveUser(user, false);
+      final updatedUsers = await _userRepository.getPersistedUsers(true);
 
       emit(UserSuccess(updatedUsers));
     } catch (e) {

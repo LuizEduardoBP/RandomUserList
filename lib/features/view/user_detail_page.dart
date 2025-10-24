@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:random_user_list/features/cubit/user_cubit.dart';
+import 'package:random_user_list/features/cubit/user_persistence_cubit.dart';
 import '../../../core/models/user_model.dart';
 
 class UserDetailPage extends StatelessWidget {
   final UserModel user;
+  final bool isTemp;
 
-  const UserDetailPage({super.key, required this.user});
+  const UserDetailPage({super.key, required this.user, required this.isTemp});
 
   @override
   Widget build(BuildContext context) {
@@ -16,20 +18,6 @@ class UserDetailPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(user.name.first),
-            ElevatedButton.icon(
-              onPressed: () {
-                context.read<UserCubit>().deleteUser(user).then((_) {
-                  Navigator.pop(context);
-                });
-              },
-              icon: const Icon(Icons.delete),
-              label: const Text('Remover Usuário'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-              ),
-            ),
           ],
         ),
       ),
@@ -74,6 +62,49 @@ class UserDetailPage extends StatelessWidget {
             ),
             const Divider(),
             const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                isTemp
+                    ? ElevatedButton.icon(
+                        onPressed: () {
+                          context.read<UserCubit>().saveUser(user);
+                          context.read<UserCubit>().deleteUser(user).then((_) {
+                            Navigator.pop(context);
+                          });
+                        },
+                        icon: const Icon(Icons.download),
+                        label: const Text('Salvar Usuário'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                        ),
+                      )
+                    : const SizedBox(width: 0),
+                const SizedBox(width: 10),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    if (isTemp) {
+                      context.read<UserCubit>().deleteUser(user).then((_) {
+                        Navigator.pop(context);
+                      });
+                    } else {
+                      context.read<PersistenceCubit>().deleteUser(user).then((_) {
+                        Navigator.pop(context);
+                      });
+                    }
+                  },
+                  icon: const Icon(Icons.delete),
+                  label: const Text('Remover Usuário'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

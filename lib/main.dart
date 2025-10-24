@@ -3,7 +3,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:random_user_list/core/models/user_model.dart';
 import 'package:random_user_list/features/view/user_page.dart';
 
-const String userListBox = 'user_list_box';
+const String userTempBox = 'user_temp_box';
+const String userPersistedBox = 'user_persisted_box';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -15,7 +17,10 @@ void main() async {
   Hive.registerAdapter(DobModelAdapter());
   Hive.registerAdapter(PictureModelAdapter());
 
-  await Hive.openBox<List<dynamic>>(userListBox);
+  await Hive.openBox<List<dynamic>>(userTempBox);
+  Hive.box<List<dynamic>>(userTempBox).clear();
+  await Hive.openBox<List<dynamic>>(userPersistedBox);
+
   runApp(const MyApp());
 }
 
@@ -27,7 +32,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'User List',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       home: UserPage(key: key),

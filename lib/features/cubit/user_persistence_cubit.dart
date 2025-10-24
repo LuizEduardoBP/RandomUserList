@@ -14,7 +14,7 @@ class PersistenceCubit extends Cubit<UserState> {
   Future<void> loadPersistedUsers() async {
     try {
       emit(UserLoading());
-      final users = await _userRepository.getPersistedUsers();
+      final users = await _userRepository.getPersistedUsers(false);
       emit(UserSuccess(users));
     } catch (e) {
       emit(UserError('Falha ao carregar usuários salvos: $e'));
@@ -23,7 +23,7 @@ class PersistenceCubit extends Cubit<UserState> {
 
   Future<void> deleteUser(UserModel user) async {
     try {
-      await _userRepository.deleteUser(user);
+      await _userRepository.deleteUser(user, false);
 
       await loadPersistedUsers();
     } catch (e) {
