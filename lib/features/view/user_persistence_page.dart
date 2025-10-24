@@ -36,14 +36,6 @@ class UserView extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Usuários Persistidos'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () {
-                context.read<PersistenceCubit>().loadPersistedUsers();
-              },
-            ),
-          ],
         ),
         body: BlocBuilder<PersistenceCubit, UserState>(
           builder: (context, state) {

@@ -23,7 +23,7 @@ class UserCubit extends Cubit<UserState> {
     if (_isFetching) return;
 
     if ((elapsed - _lastFetchTime).inSeconds >= 5) {
-      print('Ticker: 5 segundos se passaram. Buscando novo usuário...');
+      print('Buscando novo usuário...');
       _lastFetchTime = elapsed;
       fetchNewUser();
     }

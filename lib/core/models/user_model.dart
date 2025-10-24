@@ -119,7 +119,6 @@ class DobModel {
 
   factory DobModel.fromJson(Map<String, dynamic> json) {
     return DobModel(
-      // Usamos DateTime.parse para converter a string da data em um objeto DateTime
       date: DateTime.parse(json['date'] as String),
       age: json['age'] as int,
     );

@@ -26,6 +26,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
 
     final remoteDs = UserRemoteDataSource(dio: DioClient.instance);
     final localDs = UserLocalDataSource();
+
     final repository = UserRepositoryImpl(
       remoteDataSource: remoteDs,
       localDataSource: localDs,
